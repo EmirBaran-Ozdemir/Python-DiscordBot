@@ -38,14 +38,12 @@ class Rps:
     elif choices == 2:
       message = ":vulcan:"
       return message
-    else:
-      return "error"
   def userChoiceConv(self,choice):
-    if choice == "t":
+    if choice == "r":
       choice = 0
-    elif choice == "k":
+    elif choice == "p":
       choice = 1
-    elif choice == "m":
+    elif choice == "s":
       choice = 2
     else:
       choice = 3
@@ -124,6 +122,7 @@ async def search(ctx):
         await ctx.send("You know :/")
   else:
     await ctx.send("Couldn't find any movies :(")
+
 #Rock-Paper-Scissors game
 @client.command(name="rps")
 async def rpsGame(ctx):
@@ -134,21 +133,23 @@ async def rpsGame(ctx):
   #rock=0,paper=1,scissors=2
   userChoice = await client.wait_for("message", check=check)
   intUserChoice = rps.userChoiceConv(userChoice.content)
+  while intUserChoice == 3:
+    await ctx.send("There is no such choice!")
+    await ctx.send("Try again")
+    userChoice = await client.wait_for("message", check=check)
+    intUserChoice = rps.userChoiceConv(userChoice.content)
   userShape = rps.shapes(intUserChoice) 
   botShape = rps.shapes(botChoice)
-  if userShape == "error":
-    await ctx.send("There is no such choice!")
+  await ctx.send("Your choice:")
+  await ctx.send(userShape)
+  await ctx.send("Bot's choice")
+  await ctx.send(botShape)
+  if intUserChoice == botChoice:
+    await ctx.send("Draw")
+  elif intUserChoice + 1 == botChoice or (intUserChoice == 2 and botChoice == 0):
+    await ctx.send("You lose!")
   else:
-    await ctx.send("Your choice:")
-    await ctx.send(userShape)
-    await ctx.send("Bot's choice")
-    await ctx.send(botShape)
-    if intUserChoice == botChoice:
-      await ctx.send("Draw")
-    elif intUserChoice + 1 == botChoice or (intUserChoice == 2 and botChoice == 0):
-      await ctx.send("You lose!")
-    else:
-      await ctx.send("You won!")
+    await ctx.send("You won!")
 
 keep_alive()
 client.run(os.getenv("TOKEN"))
