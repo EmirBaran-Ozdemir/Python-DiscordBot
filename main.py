@@ -1,4 +1,4 @@
-import discord, os, requests, json, time, random
+import discord, os, requests, json, time, random, textwrap
 from discord.ext import commands
 from keep_alive import keep_alive
 
@@ -18,7 +18,6 @@ async def on_ready():
             name=f"{client.command_prefix}help. This bot is made by LordWile.",
         )
     )
-
 
 # MovieDB Application
 class TheMovieDB:
@@ -44,7 +43,6 @@ class TheMovieDB:
         )
         return response.json()
 
-
 # Rock-Paper-Scissors Applications
 class Rps:
     def shapes(self, choices):
@@ -69,10 +67,16 @@ class Rps:
             choice = 3
         return choice
 
+class WeatherForecast():
+    def __init__(self):
+        self.url = "https://wttr.in/"
+    def getWeather(self,search):
+        response = requests.get(f"{self.url}/{search}")
+        return response.text
 
 rps = Rps()
 movieApi = TheMovieDB()
-
+weather = WeatherForecast()
 
 @client.command(name="topRate")
 async def topRate(ctx):
@@ -184,6 +188,25 @@ async def rpsGame(ctx):
         await ctx.send("You lose!")
     else:
         await ctx.send("You won!")
+
+# Weather Forecast 
+@client.command(name="weather")
+async def weatherForecast(ctx):
+    def check(msg):
+        return msg.author == ctx.author and msg.channel == ctx.channel
+    await ctx.send("Enter a city to see its weather forecast")
+    city = await client.wait_for("message", check=check)
+    await ctx.send(city.content)
+    await ctx.send(f"Displaying Weather report for:{city.content} ")
+    response = weather.getWeather(city.content)
+    joined = 'HERE'.join(textwrap.wrap(response, 2000))
+    splitted = joined.split("HERE")
+    print(len(splitted))
+    for i in range(len(splitted)):
+        await ctx.send(splitted[i])
+        time.sleep(0.3)
+
+
 
 
 keep_alive()
