@@ -1,19 +1,20 @@
-# Discord-Python-Bot
+# Python-DiscordBot
+<a href="https://www.freepnglogos.com/pics/discord-logo-png" title="Discord Logo"><img src="https://www.freepnglogos.com/uploads/discord-logo-png/anthrocon-twitter-quot-discord-user-wanna-21.png" width="120"/></a>
 ### General Description
 This bot made by LordWile using Python & Flask.  
 There is 3 secret keys. Which named [TOKEN], [weatherApiKey] and [movieApiKey].
 You should generate these keys in your accounts if you want to recreate this bot.
 You can add this [bot] to your server!
-For any questions or suggestions reach me on Discord. (LordWile#5551)
-#### Contents
+For any questions or suggestions reach me on Discord: LordWile#5551
+### Contents
 - MovieDB search, currently playing movies and best movies.
 - Rock-Paper-Scissors game.
 - Current weather report for asked location
-#### To Do List
+### To Do List
 - Add versus player mode to Rock-Paper-Scissors game
 - Add coin system to Rock-Paper-Scissors game
 - Add new game called 21 (blackjack)
-#### Required Libraries
+### Required Libraries
 - [discord]
 - [flask]
 - [pandas]
@@ -24,7 +25,7 @@ For any questions or suggestions reach me on Discord. (LordWile#5551)
 - random -- _Default Python library_
 - datetime -- _Default Python library_
 
-#### BADGES
+### BADGES
 [![GitHub issues](https://img.shields.io/github/issues/EmirBaran-Ozdemir/Discord-Python-Bot?style=plastic)](https://github.com/EmirBaran-Ozdemir/Discord-Python-Bot/issues) [![GitHub forks](https://img.shields.io/github/forks/EmirBaran-Ozdemir/Discord-Python-Bot?style=plastic)](https://github.com/EmirBaran-Ozdemir/Discord-Python-Bot/network) [![GitHub stars](https://img.shields.io/github/stars/EmirBaran-Ozdemir/Discord-Python-Bot?style=plastic)](https://github.com/EmirBaran-Ozdemir/Discord-Python-Bot/stargazers) [![GitHub license](https://img.shields.io/github/license/EmirBaran-Ozdemir/Discord-Python-Bot?color=succes&style=plastic)](https://github.com/EmirBaran-Ozdemir/Discord-Python-Bot/blob/main/LICENSE)  
 [![Twitter](https://img.shields.io/twitter/url?label=Personal-Twitter&style=social&url=https%3A%2F%2Ftwitter.com%2FWileLord)](https://twitter.com/intent/tweet?text=Wow:&url=https%3A%2F%2Fgithub.com%2FEmirBaran-Ozdemir%2FOpenCVPython)
 
