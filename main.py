@@ -47,7 +47,7 @@ class TheMovieDB:
         return response.json()
 
 
-# Rock-Paper-Scissors Applications
+# Rock-Paper-Scissors Application
 class Rps:
     def shapes(self, choices):
         if choices == 0:
@@ -72,6 +72,7 @@ class Rps:
         return choice
 
 
+# Weather Forecast Application
 class WeatherForecast:
     def __init__(self):
         self.url = "https://api.openweathermap.org/data/2.5/weather?"
