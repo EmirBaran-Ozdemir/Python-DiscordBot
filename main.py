@@ -25,24 +25,24 @@ async def on_ready():
 # MovieDB Application
 class TheMovieDB:
     def __init__(self):
-        self.api_url = "https://api.themoviedb.org/3"
-        self.api_key = os.getenv("movieApiKey")
+        self.apiUrl = "https://api.themoviedb.org/3"
+        self.apiKey = os.getenv("movieApiKey")
 
     def getTopRateds(self):
         response = requests.get(
-            f"{self.api_url}/movie/top_rated?api_key={self.api_key}&language=en-US&page=1"
+            f"{self.apiUrl}/movie/top_rated?api_key={self.apiKey}&language=en-US&page=1"
         )
         return response.json()
 
     def getNowPlaying(self):
         response = requests.get(
-            f"{self.api_url}/movie/now_playing?api_key={self.api_key}&language=en-US&page=1"
+            f"{self.apiUrl}/movie/now_playing?api_key={self.apiKey}&language=en-US&page=1"
         )
         return response.json()
 
     def getSearchMovie(self, aranan):
         response = requests.get(
-            f"{self.api_url}/search/movie?api_key={self.api_key}&language=en-US&query={aranan}&page=1&include_adult=true"
+            f"{self.apiUrl}/search/movie?api_key={self.apiKey}&language=en-US&query={aranan}&page=1&include_adult=true"
         )
         return response.json()
 
@@ -97,9 +97,9 @@ weather = WeatherForecast()
 async def topRate(ctx):
     movies = movieApi.getTopRateds()
     cikti = ""
-    for movie in movies["results"]:
+    for index, movie in enumerate(movies["results"]):
         cikti = cikti + (
-            f"Movie name: {movie['title']} -- Score:{movie['vote_average']}\n"
+            f"{str(index+1)}. Name: {movie['title']} -- Score:{movie['vote_average']}\n"
         )
     await ctx.send(cikti)
 
