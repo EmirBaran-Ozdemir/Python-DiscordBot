@@ -40,9 +40,9 @@ class TheMovieDB:
         )
         return response.json()
 
-    def getSearchMovie(self, aranan):
+    def getSearchMovie(self, searchQuery):
         response = requests.get(
-            f"{self.apiUrl}/search/movie?api_key={self.apiKey}&language=en-US&query={aranan}&page=1&include_adult=true"
+            f"{self.apiUrl}/search/movie?api_key={self.apiKey}&language=en-US&query={searchQuery}&page=1&include_adult=true"
         )
         return response.json()
 
@@ -115,7 +115,7 @@ async def nowPlaying(ctx):
     await ctx.send(cikti)
 
 
-@client.command(name="search")
+@client.command(name="movSearch")
 async def search(ctx):
     await ctx.send("Write the name of movie you want to see!")
 
