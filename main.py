@@ -29,7 +29,7 @@ prefix = "lw"
 intents = discord.Intents.all()
 intents.typing = False
 intents.presences = False
-client = commands.Bot(command_prefix=prefix, case_insensitive=False, intents=intents)
+client = commands.Bot(command_prefix=prefix, case_insensitive=True, intents=intents)
 
 
 @client.event
@@ -51,7 +51,20 @@ movieApi = TheMovieDB()
 weather = WeatherForecast()
 
 
-# CHATGPT
+# #! BASIC DISCORD EVENTS - NEEDS FIX
+# @client.command(name="clear")
+# async def clearMessages(ctx, amount: int):
+#     """
+#     Deletes specified amount of messages.
+#     Args:
+#         amount (int): number of messages to delete.
+#     """
+#     print("what")
+#     print(type(amount) + amount)
+#     await ctx.channel.purge(limit=amount)
+
+
+#! CHATGPT
 @client.command(name="chat")
 async def askQuestion(ctx):
     """
@@ -80,11 +93,11 @@ async def setUserAPI(ctx):
     msg = await client.wait_for("message", check=check)
     chatGPT = ChatGPT(msg.author.name)
     result = chatGPT.setAPI(msg.content)
-    # await message.delete()
+    await msg.delete()
     await ctx.send(result)
 
 
-# MOVIE DB
+#! MOVIE DB
 @client.command(name="topRate")
 async def topRate(ctx):
     """
@@ -119,7 +132,8 @@ async def search(ctx):
         return msg.author == ctx.author and msg.channel == ctx.channel
 
     msg = await client.wait_for("message", check=check)
-    movies = movieApi.getSearchMovie(msg.content)
+    userSearch = msg.content.lower()
+    movies = movieApi.getSearchMovie(userSearch)
     counter = 0
     movieOverviews = {}
     movieTitles = {}
@@ -169,30 +183,36 @@ async def search(ctx):
                 await ctx.send(movieOverviews[int(summaryNo)])
 
 
-# Rock-Paper-Scissors game
+#! Rock-Paper-Scissors
 @client.command(name="rps")
 async def rpsGame(ctx):
     """
     Rock-Paper-Scissors game for users.
     """
+    MAX_ATTEMPTS = 3
+
+    validChoices = "r(rock), p(paper), s(scissors)"
+    await ctx.send(
+        "Welcome to rock-paper-scissors game.\nYou can choose by typing" + validChoices
+    )
 
     def check(msg):
         return msg.author == ctx.author and msg.channel == ctx.channel
 
-    await ctx.send(
-        """Welcome to rock-paper-scissors game.\nYou can choose by typing\
-r(rock), p(paper), s(scissors)"""
-    )
-    botChoice = random.randint(0, 2)
-    # rock=0,paper=1,scissors=2
-    userChoice = await client.wait_for("message", check=check)
-    intUserChoice = rps.userChoiceConv(userChoice.content)
-    while intUserChoice == 3:
-        await ctx.send("There is no such choice!")
-        await ctx.send("Try again")
-        userChoice = await client.wait_for("message", check=check)
-        intUserChoice = rps.userChoiceConv(userChoice.content)
+    for i in range(MAX_ATTEMPTS):
+        msg = await client.wait_for("message", check=check)
+        userChoice = msg.content.lower()
+        intUserChoice = rps.userChoiceConv(userChoice)
+        if intUserChoice in [1, 2]:
+            break
+        else:
+            await ctx.send(
+                f"There is no such choice! Valid choices:{validChoices}, try again."
+            )
+        if i == MAX_ATTEMPTS - 1:
+            await ctx.send("Max attempts reached. Exiting game...")
     userShape = rps.shapes(intUserChoice)
+    botChoice = random.randint(0, 2)  # rock=0,paper=1,scissors=2
     botShape = rps.shapes(botChoice)
     await ctx.send("Your choice:")
     await ctx.send(userShape)
@@ -206,25 +226,31 @@ r(rock), p(paper), s(scissors)"""
         await ctx.send("You won!")
 
 
-# Weather Forecast
+#! Weather Forecast
 @client.command(name="weather")
 async def weatherForecast(ctx):
     """
     Display the weather forecast for a given city.
     """
+    MAX_ATTEMPTS = 2
 
     def check(msg):
         return msg.author == ctx.author and msg.channel == ctx.channel
 
     await ctx.send("Enter a city to see its weather forecast")
-    city = await client.wait_for("message", check=check)
-    weatherRes = weather.getWeather(city.content)
-    while weatherRes["cod"] == str(404):
-        await ctx.send("There is no such city please try again")
-        city = await client.wait_for("message", check=check)
-        weatherRes = weather.getWeather(city)
 
-    #! Getting and fetching data
+    for i in range(MAX_ATTEMPTS):
+        msg = await client.wait_for("message", check=check)
+        city = msg.content.lower()
+        weatherRes = weather.getWeather(city)
+        if weatherRes["cod"] == str(404):
+            await ctx.send("There is no such city please try again")
+        else:
+            break
+        if i == MAX_ATTEMPTS - 1:
+            await ctx.send("Max attempts reached. Exiting...")
+
+    # ? Getting and fetching data
     tempKelvin = weatherRes["main"]["temp"]
     tempCelcius = weather.kelvinToCelcius(tempKelvin)
 
@@ -242,14 +268,26 @@ async def weatherForecast(ctx):
     description = weatherRes["weather"][0]["description"]
     windSpeed = weatherRes["wind"]["speed"]
     humidity = weatherRes["main"]["humidity"]
-    await ctx.send(f"Displaying weather report for: {city.content.upper()} ")
+    await ctx.send(f"Displaying weather report for: {city} ")
     await ctx.send(
-        f"Temperature: {tempCelcius:.2f}°C and feels like "
-        f"{feelsLikeCelcius:.2f}°C Humidity: {humidity}% Wind speed:"
-        f"{windSpeed}m/s Sun rises at {sunriseTime} and sun sets at"
-        f"{sunsetTime}"
+        f"""Temperature:{tempCelcius:.2f}°C and feels like \
+{feelsLikeCelcius:.2f}°C \nHumidity: {humidity}% Wind speed:{windSpeed}m/s\
+Sunrises at {sunriseTime} and sun sets at {sunsetTime}"""
     )
     await ctx.send(f"General Weather: {description}")
+
+
+#! ERROR HANDLING
+@client.event
+async def on_command_error(ctx, error):
+    if isinstance(error, commands.CommandNotFound):
+        await ctx.send("Invalid command.")
+
+
+@clearMessages.error
+async def clearError(ctx, error):  # ? MissingRequiredArgument
+    if isinstance(error, commands.MissingRequiredArgument):
+        await ctx.send("Please specify the amount of messages to delete.")
 
 
 keep_alive()

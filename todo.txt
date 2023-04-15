@@ -1,4 +1,6 @@
-Create error handling
-Detect non existed commands
-Get user API for GPT - Done
-Add poster & release date to movie details 
+Prog - Handle exceptions
+Done - Detect non existed commands
+Done - Get user API for GPT 
+Prog - Add poster & release date to movie details 
+Prog - Handle long GPT messages
+FIX - Multiple message delete 

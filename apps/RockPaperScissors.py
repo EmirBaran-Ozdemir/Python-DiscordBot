@@ -4,10 +4,13 @@ will be gathered as a string, then it will be converted to an integer, and
 finally, the name of the emoji that will be displayed on Discord will be
 returned.
 """
+
+
 class Rps:
     """
     A class for playing RPS against Bot
     """
+
     def shapes(self, choices):
         """
         The shapes method returns the corresponding emoji message based on the user's input choice.
@@ -44,5 +47,5 @@ class Rps:
         elif choice == "s":
             choice = 2
         else:
-            choice = 3
+            return "error"
         return choice
