@@ -1,0 +1,4 @@
+Create error handling
+Detect non existed commands
+Get user API for GPT - Done
+Add poster & release date to movie details 
